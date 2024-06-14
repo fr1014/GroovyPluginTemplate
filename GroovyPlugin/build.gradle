@@ -1,0 +1,80 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'maven-publish' //用于将 插件上传到 远程仓库 或者 本地仓库 中
+}
+
+def pluginId = 'com.fangao.android.groovy-template-plugin'
+def pluginImplementationClass = 'com.fangao.android.GroovyPlugin'
+
+gradlePlugin {
+    plugins {
+        create('GroovyTemplatePlugin') {
+            //插件id
+            id = pluginId
+            //插件的包名+类名
+            implementationClass = pluginImplementationClass
+        }
+    }
+}
+
+group = GROUP
+version = VERSION_NAME
+
+publishing {
+
+//    这部分代码不需要配置，会根据gradlePlugin中的进行生成
+//    除非使用老版本的插件依赖方式(classpath):需要指定artifactId的情况下，才需要使用
+//    publications {
+//        maven(MavenPublication) {
+//            groupId = group
+//            artifactId = 'GroovyPlugin'
+//            version = version
+//
+//            from components.java
+//        }
+//    }
+
+    // 配置仓库地址
+    repositories {
+        mavenLocal()
+    }
+}
+
+///**
+// * gradle8.2中的setting.gradle中
+// *
+// * dependencyResolutionManagement {
+// *  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+// *  repositories {
+// *      google()
+// *      mavenCentral()
+// *  }
+// * }
+// *
+// * repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS) 是一种配置，
+// * 用于强制要求所有的仓库定义必须在 settings.gradle 文件中进行，而不允许在各个项目的 build.gradle 文件中定义仓库。
+// * 如果在项目的 build.gradle 文件中定义了仓库，就会导致构建失败并抛出错误。
+// * 这是一种确保所有仓库配置集中管理的方式，可以避免依赖解析的混乱和重复定义。
+// *
+// * 如果在任何build中定义了仓库，例如：
+// * repositories {
+// *  mavenCentral()
+// * }
+// * 构建将失败，并抛出类似于以下的错误：
+// * org.gradle.api.InvalidUserCodeException: Build was configured to prefer settings repositories over project repositories but repository 'MavenRepo' was added by build file 'subproject/build.gradle'
+// *
+// * repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS) 是一种配置选项，
+// * 用于指定Gradle在解析依赖时优先使用在 settings.gradle 文件中定义的仓库，
+// * 但仍然允许在各个项目的 build.gradle 文件中定义仓库。如果在 settings.gradle 中未找到所需的依赖，
+// * Gradle会继续查找项目级别（即 build.gradle 文件）中定义的仓库。
+// * /
+
+//repositories {
+//    mavenCentral()
+//}
+
+//dependencies {
+//    implementation gradleApi()
+//    implementation localGroovy()
+//}
